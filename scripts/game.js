@@ -21,6 +21,12 @@ const gameState = {
         passing: 6,
         tempo: 8
     },
+    training: {
+        fitness: 5,
+        tactical: 7,
+        technical: 6,
+        setPieces: 5
+    },
     leagueTable: [],
     competitions: {
         premierLeague: { position: 1, played: 0, won: 0, drawn: 0, lost: 0 },

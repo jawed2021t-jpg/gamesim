@@ -54,6 +54,42 @@ function loadSquadView() {
     });
 }
 
+function openTransferSearch() {
+    alert("Feature coming soon: Advanced player search!");
+}
+
+function showTransferList() {
+    alert("Feature coming soon: View players on the transfer list.");
+}
+
+function showLoanMarket() {
+    alert("Feature coming soon: Loan market functionality.");
+}
+
+function saveTrainingRegime() {
+    gameState.training.fitness = parseInt(document.getElementById('fitness').value);
+    gameState.training.tactical = parseInt(document.getElementById('tactical').value);
+    gameState.training.technical = parseInt(document.getElementById('technical').value);
+    gameState.training.setPieces = parseInt(document.getElementById('setPieces').value);
+
+    alert("Training regime saved successfully!");
+    addNewsItem("👨‍🏫 New training schedules have been set.");
+}
+
+function offerNewContract(playerId) {
+    alert("Feature coming soon: Detailed contract negotiations.");
+}
+
+function transferList(playerId) {
+    const player = gameState.squad.find(p => p.id === playerId);
+    if (player) {
+        player.onTransferList = true;
+        addNewsItem(`📝 ${player.name} has been placed on the transfer list.`);
+        alert(`${player.name} has been transfer listed.`);
+        closeModal('playerModal');
+    }
+}
+
 function createPlayerCard(player) {
     const card = document.createElement('div');
     card.className = 'player-card';
