@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Manager Simulator 2025/26</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .club-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .club-badge {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .club-details h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .club-details p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .player-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .player-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .player-details h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .player-details p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .player-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-lbl {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button.secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .formation-display {
+            background: linear-gradient(to bottom, #4CAF50 0%, #2E7D32 100%);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+            height: 400px;
+        }
+
+        .formation-position {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .formation-position:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .match-simulation {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .team-score {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .match-events {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+
+        .event {
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .event.goal {
+            border-left-color: #4CAF50;
+        }
+
+        .event.yellow {
+            border-left-color: #FFC107;
+        }
+
+        .event.red {
+            border-left-color: #f44336;
+        }
+
+        .transfer-market {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .transfer-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+
+        .transfer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .news-ticker {
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .news-content {
+            display: flex;
+            animation: scroll 30s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .news-item {
+            padding: 0 30px;
+            white-space: nowrap;
+        }
+
+        .league-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .league-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .league-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .league-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .highlight-row {
+            background: #e3f2fd !important;
+            font-weight: 600;
+        }
+
+        .tactics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .tactic-slider {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .tactic-slider label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .finance-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .finance-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .finance-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .finance-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .finance-amount.positive {
+            color: #4CAF50;
+        }
+
+        .finance-amount.negative {
+            color: #f44336;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scout-report {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .attribute-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .attribute-label {
+            width: 120px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .attribute-value {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+
+        .attribute-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            transition: width 0.5s;
+        }
+
+        .attribute-number {
+            width: 30px;
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <h2>Loading Soccer Manager 2025/26...</h2>
+        <p>Preparing your managerial career...</p>
+    </div>
+
+    <div class="container" id="gameContainer" style="display: none;">
+        <div class="header">
+            <div class="club-info">
+                <div class="club-badge" id="clubBadge">MC</div>
+                <div class="club-details">
+                    <h2 id="clubName">Manchester City</h2>
+                    <p><span id="currentDate">August 1, 2025</span> | <span id="leaguePosition">Position: 1st</span></p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="clubBudget">£150M</div>
+                    <div class="stat-label">Transfer Budget</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="wageBudget">£5.2M</div>
+                    <div class="stat-label">Weekly Wages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="squadSize">25</div>
+                    <div class="stat-label">Squad Size</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="seasonRecord">W0 D0 L0</div>
+                    <div class="stat-label">Season Record</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="news-ticker">
+            <div class="news-content" id="newsTicker">
+                <span class="news-item">📰 Transfer Window Open - Make your moves!</span>
+                <span class="news-item">⚽ Season 2025/26 begins - Good luck!</span>
+                <span class="news-item">🏆 Champions League Draw Tomorrow</span>
+                <span class="news-item">💰 New TV Deal Worth £5 Billion Announced</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <nav class="sidebar">
+                <div class="menu-item active" onclick="showTab('dashboard')">📊 Dashboard</div>
+                <div class="menu-item" onclick="showTab('squad')">👥 Squad</div>
+                <div class="menu-item" onclick="showTab('tactics')">📋 Tactics</div>
+                <div class="menu-item" onclick="showTab('transfers')">💼 Transfers</div>
+                <div class="menu-item" onclick="showTab('matches')">⚽ Matches</div>
+                <div class="menu-item" onclick="showTab('league')">🏆 League Table</div>
+                <div class="menu-item" onclick="showTab('finances')">💰 Finances</div>
+                <div class="menu-item" onclick="showTab('scouting')">🔍 Scouting</div>
+                <div class="menu-item" onclick="showTab('training')">🏃 Training</div>
+                <div class="menu-item" onclick="showTab('media')">📺 Media</div>
+            </nav>
+
+            <div class="content-area">
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="dashboard">
+                    <h2>Dashboard</h2>
+                    <div class="finance-dashboard">
+                        <div class="finance-card">
+                            <h3>Next Match</h3>
+                            <div class="finance-amount" id="nextMatch">vs Arsenal</div>
+                            <p>Premier League - Home</p>
+                        </div>
+                        <div class="finance-card">
+                            <h3>Form</h3>
+                            <div class="finance-amount positive">WWDWL</div>
+                            <p>Last 5 matches</p>
+                        </div>
+                        <div class="finance-card">
+                            <h3>Top Scorer</h3>
+                            <div class="finance-amount">E. Haaland (8)</div>
+                            <p>All Competitions</p>
+                        </div>
+                        <div class="finance-card">
+                            <h3>Board Confidence</h3>
+                            <div class="finance-amount positive">85%</div>
+                            <p>Very Happy</p>
+                        </div>
+                    </div>
+                    <h3>Recent Results</h3>
+                    <div class="match-simulation">
+                        <div class="match-events" id="recentResults"></div>
+                    </div>
+                </div>
+
+                <!-- Squad Tab -->
+                <div class="tab-content" id="squad">
+                    <h2>Squad Management</h2>
+                    <div class="button-group">
+                        <button class="button" onclick="showPositionFilter('ALL')">All Players</button>
+                        <button class="button secondary" onclick="showPositionFilter('GK')">Goalkeepers</button>
+                        <button class="button secondary" onclick="showPositionFilter('DEF')">Defenders</button>
+                        <button class="button secondary" onclick="showPositionFilter('MID')">Midfielders</button>
+                        <button class="button secondary" onclick="showPositionFilter('ATT')">Attackers</button>
+                    </div>
+                    <div id="squadList"></div>
+                </div>
+
+                <!-- Tactics Tab -->
+                <div class="tab-content" id="tactics">
+                    <h2>Tactical Setup</h2>
+                    <div class="formation-display" id="formationDisplay">
+                        <!-- Formation positions will be dynamically added -->
+                    </div>
+                    <div class="tactics-grid">
+                        <div class="tactic-slider">
+                            <label>Defensive Line: <span id="defLineValue">5</span></label>
+                            <input type="range" class="slider" id="defLine" min="1" max="10" value="5" onchange="updateTactic('defLine')">
+                        </div>
+                        <div class="tactic-slider">
+                            <label>Pressing Intensity: <span id="pressingValue">7</span></label>
+                            <input type="range" class="slider" id="pressing" min="1" max="10" value="7" onchange="updateTactic('pressing')">
+                        </div>
+                        <div class="tactic-slider">
+                            <label>Passing Directness: <span id="passingValue">6</span></label>
+                            <input type="range" class="slider" id="passing" min="1" max="10" value="6" onchange="updateTactic('passing')">
+                        </div>
+                        <div class="tactic-slider">
+                            <label>Tempo: <span id="tempoValue">8</span></label>
+                            <input type="range" class="slider" id="tempo" min="1" max="10" value="8" onchange="updateTactic('tempo')">
+                        </div>
+                    </div>
+                    <button class="button" onclick="saveFormation()">Save Formation</button>
+                    <button class="button secondary" onclick="loadPresetFormation('4-3-3')">4-3-3</button>
+                    <button class="button secondary" onclick="loadPresetFormation('4-4-2')">4-4-2</button>
+                    <button class="button secondary" onclick="loadPresetFormation('3-5-2')">3-5-2</button>
+                </div>
+
+                <!-- Transfers Tab -->
+                <div class="tab-content" id="transfers">
+                    <h2>Transfer Market</h2>
+                    <div class="button-group">
+                        <button class="button" onclick="openTransferSearch()">Search Players</button>
+                        <button class="button secondary" onclick="showTransferList()">Transfer List</button>
+                        <button class="button secondary" onclick="showLoanMarket()">Loan Market</button>
+                    </div>
+                    <div class="transfer-market" id="transferMarket"></div>
+                </div>
+
+                <!-- Matches Tab -->
+                <div class="tab-content" id="matches">
+                    <h2>Match Center</h2>
+                    <div class="match-simulation">
+                        <div class="match-header">
+                            <div class="team-score">
+                                <h3 id="homeTeamName">Manchester City</h3>
+                                <div class="score" id="homeScore">0</div>
+                            </div>
+                            <div>
+                                <div id="matchTime">0'</div>
+                                <div id="matchStatus">Not Started</div>
+                            </div>
+                            <div class="team-score">
+                                <div class="score" id="awayScore">0</div>
+                                <h3 id="awayTeamName">Arsenal</h3>
+                            </div>
+                        </div>
+                        <button class="button" onclick="simulateMatch()">Simulate Match</button>
+                        <button class="button secondary" onclick="quickSim()">Quick Sim</button>
+                        <div class="match-events" id="matchEvents"></div>
+                    </div>
+                </div>
+
+                <!-- League Table Tab -->
+                <div class="tab-content" id="league">
+                    <h2>Premier League Table</h2>
+                    <table class="league-table">
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>P</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leagueTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Finances Tab -->
+                <div class="tab-content" id="finances">
+                    <h2>Financial Overview</h2>
+                    <div class="finance-dashboard">
+                        <div class="finance-card">
+                            <h3>Total Revenue</h3>
+                            <div class="finance-amount positive">£425M</div>
+                        </div>
+                        <div class="finance-card">
+                            <h3>Total Expenses</h3>
+                            <div class="finance-amount negative">£380M</div>
+                        </div>
+                        <div class="finance-card">
+                            <h3>Net Profit</h3>
+                            <div class="finance-amount positive">£45M</div>
+                        </div>
+                        <div class="finance-card">
+                            <h3>Stadium Revenue</h3>
+                            <div class="finance-amount">£85M</div>
+                        </div>
+                    </div>
+                    <h3>Revenue Breakdown</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <p>Matchday: 30%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <p>Broadcasting: 45%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 25%"></div>
+                    </div>
+                    <p>Commercial: 25%</p>
+                </div>
+
+                <!-- Scouting Tab -->
+                <div class="tab-content" id="scouting">
+                    <h2>Scouting Network</h2>
+                    <button class="button" onclick="generateScoutReport()">New Scout Report</button>
+                    <div id="scoutReports"></div>
+                </div>
+
+                <!-- Training Tab -->
+                <div class="tab-content" id="training">
+                    <h2>Training Ground</h2>
+                    <div class="tactics-grid">
+                        <div class="tactic-slider">
+                            <label>Fitness Focus: <span id="fitnessValue">5</span></label>
+                            <input type="range" class="slider" id="fitness" min="1" max="10" value="5">
+                        </div>
+                        <div class="tactic-slider">
+                            <label>Tactical Training: <span id="tacticalValue">7</span></label>
+                            <input type="range" class="slider" id="tactical" min="1" max="10" value="7">
+                        </div>
+                        <div class="tactic-slider">
+                            <label>Technical Skills: <span id="technicalValue">6</span></label>
+                            <input type="range" class="slider" id="technical" min="1" max="10" value="6">
+                        </div>
+                        <div class="tactic-slider">
+                            <label>Set Pieces: <span id="setPiecesValue">5</span></label>
+                            <input type="range" class="slider" id="setPieces" min="1" max="10" value="5">
+                        </div>
+                    </div>
+                    <button class="button" onclick="saveTrainingRegime()">Save Training Regime</button>
+                </div>
+
+                <!-- Media Tab -->
+                <div class="tab-content" id="media">
+                    <h2>Media Center</h2>
+                    <div class="scout-report">
+                        <h3>Press Conference</h3>
+                        <p><strong>Reporter:</strong> "How do you feel about the upcoming match against Arsenal?"</p>
+                        <button class="button" onclick="pressResponse('confident')">We're confident</button>
+                        <button class="button secondary" onclick="pressResponse('respectful')">They're a tough opponent</button>
+                        <button class="button secondary" onclick="pressResponse('mindgames')">The pressure is on them</button>
+                    </div>
+                    <div id="mediaResponse"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalPlayerName">Player Details</h2>
+                <button class="modal-close" onclick="closeModal('playerModal')">×</button>
+            </div>
+            <div id="playerModalContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="transferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Transfer Negotiation</h2>
+                <button class="modal-close" onclick="closeModal('transferModal')">×</button>
+            </div>
+            <div id="transferModalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            currentClub: {
+                name: "Manchester City",
+                budget: 150000000,
+                wageBudget: 5200000,
+                reputation: 95,
+                facilities: {
+                    training: 9,
+                    youth: 8,
+                    stadium: 9
+                }
+            },
+            currentDate: new Date(2025, 7, 1),
+            currentSeason: "2025/26",
+            squad: [],
+            formation: "4-3-3",
+            tactics: {
+                defLine: 5,
+                pressing: 7,
+                passing: 6,
+                tempo: 8
+            },
+            leagueTable: [],
+            competitions: {
+                premierLeague: { position: 1, played: 0, won: 0, drawn: 0, lost: 0 },
+                championsLeague: { stage: "Group Stage" },
+                faCup: { round: "Third Round" }
+            },
+            transferMarket: [],
+            scoutReports: [],
+            matchEngine: {
+                homeScore: 0,
+                awayScore: 0,
+                minute: 0,
+                events: []
+            },
+            news: [],
+            boardConfidence: 85,
+            fanMood: 80,
+            rivalries: {
+                "Manchester United": 100,
+                "Liverpool": 85,
+                "Arsenal": 70
+            }
+        };
+
+        // Player Generation
+        const positions = ['GK', 'CB', 'LB', 'RB', 'CDM', 'CM', 'CAM', 'LW', 'RW', 'ST'];
+        const firstNames = ['James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles', 'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Donald', 'Mark', 'Paul', 'Steven', 'Andrew', 'Kenneth'];
+        const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin'];
+        const nationalities = ['England', 'Spain', 'Germany', 'France', 'Italy', 'Brazil', 'Argentina', 'Portugal', 'Netherlands', 'Belgium'];
+
+        function generatePlayer(overridePosition = null, overrideRating = null) {
+            const position = overridePosition || positions[Math.floor(Math.random() * positions.length)];
+            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            const nationality = nationalities[Math.floor(Math.random() * nationalities.length)];
+            const age = Math.floor(Math.random() * 15) + 18;
+            const baseRating = overrideRating || Math.floor(Math.random() * 30) + 60;
+            
+            const player = {
+                id: Date.now() + Math.random(),
+                name: `${firstName} ${lastName}`,
+                position: position,
+                age: age,
+                nationality: nationality,
+                overall: baseRating,
+                potential: Math.min(99, baseRating + Math.floor(Math.random() * 20)),
+                attributes: {
+                    pace: Math.floor(Math.random() * 20) + baseRating - 10,
+                    shooting: Math.floor(Math.random() * 20) + baseRating - 10,
+                    passing: Math.floor(Math.random() * 20) + baseRating - 10,
+                    dribbling: Math.floor(Math.random() * 20) + baseRating - 10,
+                    defending: Math.floor(Math.random() * 20) + baseRating - 10,
+                    physical: Math.floor(Math.random() * 20) + baseRating - 10
+                },
+                value: calculatePlayerValue(baseRating, age),
+                wage: calculatePlayerWage(baseRating),
+                contract: Math.floor(Math.random() * 4) + 1,
+                morale: 75,
+                fitness: 100,
+                form: 7,
+                goals: 0,
+                assists: 0,
+                yellowCards: 0,
+                redCards: 0,
+                injuries: [],
+                chemistry: Math.floor(Math.random() * 30) + 70
+            };
+            
+            return player;
+        }
+
+        function calculatePlayerValue(rating, age) {
+            let baseValue = rating * 1000000;
+            if (age < 24) baseValue *= 1.5;
+            if (age > 30) baseValue *= 0.7;
+            if (age > 33) baseValue *= 0.4;
+            return Math.floor(baseValue);
+        }
+
+        function calculatePlayerWage(rating) {
+            return Math.floor(rating * 2000);
+        }
+
+        // Initialize Squad
+        function initializeSquad() {
+            // Generate a competitive squad
+            gameState.squad = [];
+            
+            // Goalkeepers
+            for (let i = 0; i < 3; i++) {
+                gameState.squad.push(generatePlayer('GK', 75 + Math.floor(Math.random() * 10)));
+            }
+            
+            // Defenders
+            for (let i = 0; i < 8; i++) {
+                const defPositions = ['CB', 'LB', 'RB'];
+                gameState.squad.push(generatePlayer(defPositions[Math.floor(Math.random() * defPositions.length)], 75 + Math.floor(Math.random() * 12)));
+            }
+            
+            // Midfielders
+            for (let i = 0; i < 8; i++) {
+                const midPositions = ['CDM', 'CM', 'CAM'];
+                gameState.squad.push(generatePlayer(midPositions[Math.floor(Math.random() * midPositions.length)], 76 + Math.floor(Math.random() * 12)));
+            }
+            
+            // Attackers
+            for (let i = 0; i < 6; i++) {
+                const attPositions = ['LW', 'RW', 'ST'];
+                gameState.squad.push(generatePlayer(attPositions[Math.floor(Math.random() * attPositions.length)], 77 + Math.floor(Math.random() * 13)));
+            }
+            
+            // Assign squad numbers
+            gameState.squad.forEach((player, index) => {
+                player.number = index + 1;
+            });
+        }
+
+        // Initialize League Table
+        function initializeLeagueTable() {
+            const teams = [
+                'Manchester City', 'Arsenal', 'Liverpool', 'Chelsea', 'Manchester United',
+                'Tottenham', 'Newcastle', 'Brighton', 'Aston Villa', 'West Ham',
+                'Fulham', 'Brentford', 'Crystal Palace', 'Wolverhampton', 'Everton',
+                'Leicester', 'Nottingham Forest', 'Bournemouth', 'Luton Town', 'Burnley'
+            ];
+            
+            gameState.leagueTable = teams.map(team => ({
+                name: team,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                goalsFor: 0,
+                goalsAgainst: 0,
+                goalDifference: 0,
+                points: 0
+            }));
+        }
+
+        // Initialize Transfer Market
+        function initializeTransferMarket() {
+            gameState.transferMarket = [];
+            for (let i = 0; i < 100; i++) {
+                const player = generatePlayer();
+                player.club = "Free Agent";
+                gameState.transferMarket.push(player);
+            }
+        }
+
+        // UI Functions
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked menu item
+            event.target.classList.add('active');
+            
+            // Load tab-specific content
+            switch(tabName) {
+                case 'squad':
+                    loadSquadView();
+                    break;
+                case 'tactics':
+                    loadFormationView();
+                    break;
+                case 'transfers':
+                    loadTransferMarket();
+                    break;
+                case 'league':
+                    updateLeagueTable();
+                    break;
+                case 'scouting':
+                    loadScoutingReports();
+                    break;
+            }
+        }
+
+        function loadSquadView() {
+            const squadList = document.getElementById('squadList');
+            squadList.innerHTML = '';
+            
+            gameState.squad.forEach(player => {
+                const playerCard = createPlayerCard(player);
+                squadList.appendChild(playerCard);
+            });
+        }
+
+        function createPlayerCard(player) {
+            const card = document.createElement('div');
+            card.className = 'player-card';
+            card.innerHTML = `
+                <div class="player-info">
+                    <div class="player-number">${player.number || '?'}</div>
+                    <div class="player-details">
+                        <h4>${player.name}</h4>
+                        <p>${player.position} | ${player.age} years | ${player.nationality}</p>
+                    </div>
+                </div>
+                <div class="player-stats">
+                    <div class="stat">
+                        <div class="stat-val">${player.overall}</div>
+                        <div class="stat-lbl">OVR</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-val">${player.potential}</div>
+                        <div class="stat-lbl">POT</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-val">£${(player.value/1000000).toFixed(1)}M</div>
+                        <div class="stat-lbl">VALUE</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-val">${player.form}</div>
+                        <div class="stat-lbl">FORM</div>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => showPlayerDetails(player);
+            return card;
+        }
+
+        function showPlayerDetails(player) {
+            const modal = document.getElementById('playerModal');
+            const modalContent = document.getElementById('playerModalContent');
+            
+            document.getElementById('modalPlayerName').textContent = player.name;
+            
+            modalContent.innerHTML = `
+                <div class="scout-report">
+                    <h3>Player Information</h3>
+                    <p><strong>Position:</strong> ${player.position}</p>
+                    <p><strong>Age:</strong> ${player.age}</p>
+                    <p><strong>Nationality:</strong> ${player.nationality}</p>
+                    <p><strong>Overall Rating:</strong> ${player.overall}</p>
+                    <p><strong>Potential:</strong> ${player.potential}</p>
+                    <p><strong>Value:</strong> £${(player.value/1000000).toFixed(1)}M</p>
+                    <p><strong>Weekly Wage:</strong> £${player.wage.toLocaleString()}</p>
+                    <p><strong>Contract:</strong> ${player.contract} years remaining</p>
+                    
+                    <h3>Attributes</h3>
+                    <div class="attribute-bar">
+                        <span class="attribute-label">Pace</span>
+                        <div class="attribute-value">
+                            <div class="attribute-fill" style="width: ${player.attributes.pace}%"></div>
+                        </div>
+                        <span class="attribute-number">${player.attributes.pace}</span>
+                    </div>
+                    <div class="attribute-bar">
+                        <span class="attribute-label">Shooting</span>
+                        <div class="attribute-value">
+                            <div class="attribute-fill" style="width: ${player.attributes.shooting}%"></div>
+                        </div>
+                        <span class="attribute-number">${player.attributes.shooting}</span>
+                    </div>
+                    <div class="attribute-bar">
+                        <span class="attribute-label">Passing</span>
+                        <div class="attribute-value">
+                            <div class="attribute-fill" style="width: ${player.attributes.passing}%"></div>
+                        </div>
+                        <span class="attribute-number">${player.attributes.passing}</span>
+                    </div>
+                    <div class="attribute-bar">
+                        <span class="attribute-label">Dribbling</span>
+                        <div class="attribute-value">
+                            <div class="attribute-fill" style="width: ${player.attributes.dribbling}%"></div>
+                        </div>
+                        <span class="attribute-number">${player.attributes.dribbling}</span>
+                    </div>
+                    <div class="attribute-bar">
+                        <span class="attribute-label">Defending</span>
+                        <div class="attribute-value">
+                            <div class="attribute-fill" style="width: ${player.attributes.defending}%"></div>
+                        </div>
+                        <span class="attribute-number">${player.attributes.defending}</span>
+                    </div>
+                    <div class="attribute-bar">
+                        <span class="attribute-label">Physical</span>
+                        <div class="attribute-value">
+                            <div class="attribute-fill" style="width: ${player.attributes.physical}%"></div>
+                        </div>
+                        <span class="attribute-number">${player.attributes.physical}</span>
+                    </div>
+                    
+                    <h3>Season Statistics</h3>
+                    <p><strong>Goals:</strong> ${player.goals}</p>
+                    <p><strong>Assists:</strong> ${player.assists}</p>
+                    <p><strong>Yellow Cards:</strong> ${player.yellowCards}</p>
+                    <p><strong>Red Cards:</strong> ${player.redCards}</p>
+                </div>
+                
+                <button class="button" onclick="offerNewContract(${player.id})">Offer New Contract</button>
+                <button class="button secondary" onclick="transferList(${player.id})">Transfer List</button>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function loadFormationView() {
+            const display = document.getElementById('formationDisplay');
+            display.innerHTML = '';
+            
+            const formations = {
+                '4-3-3': [
+                    { pos: 'GK', x: 50, y: 90 },
+                    { pos: 'LB', x: 20, y: 70 },
+                    { pos: 'CB', x: 35, y: 75 },
+                    { pos: 'CB', x: 65, y: 75 },
+                    { pos: 'RB', x: 80, y: 70 },
+                    { pos: 'CDM', x: 50, y: 55 },
+                    { pos: 'CM', x: 30, y: 45 },
+                    { pos: 'CM', x: 70, y: 45 },
+                    { pos: 'LW', x: 20, y: 25 },
+                    { pos: 'ST', x: 50, y: 15 },
+                    { pos: 'RW', x: 80, y: 25 }
+                ],
+                '4-4-2': [
+                    { pos: 'GK', x: 50, y: 90 },
+                    { pos: 'LB', x: 20, y: 70 },
+                    { pos: 'CB', x: 35, y: 75 },
+                    { pos: 'CB', x: 65, y: 75 },
+                    { pos: 'RB', x: 80, y: 70 },
+                    { pos: 'LM', x: 20, y: 45 },
+                    { pos: 'CM', x: 35, y: 50 },
+                    { pos: 'CM', x: 65, y: 50 },
+                    { pos: 'RM', x: 80, y: 45 },
+                    { pos: 'ST', x: 35, y: 20 },
+                    { pos: 'ST', x: 65, y: 20 }
+                ],
+                '3-5-2': [
+                    { pos: 'GK', x: 50, y: 90 },
+                    { pos: 'CB', x: 30, y: 75 },
+                    { pos: 'CB', x: 50, y: 78 },
+                    { pos: 'CB', x: 70, y: 75 },
+                    { pos: 'LWB', x: 15, y: 50 },
+                    { pos: 'RWB', x: 85, y: 50 },
+                    { pos: 'CDM', x: 50, y: 55 },
+                    { pos: 'CM', x: 35, y: 40 },
+                    { pos: 'CM', x: 65, y: 40 },
+                    { pos: 'ST', x: 35, y: 20 },
+                    { pos: 'ST', x: 65, y: 20 }
+                ]
+            };
+            
+            const currentFormation = formations[gameState.formation];
+            currentFormation.forEach((position, index) => {
+                const posDiv = document.createElement('div');
+                posDiv.className = 'formation-position';
+                posDiv.style.left = `${position.x}%`;
+                posDiv.style.top = `${position.y}%`;
+                posDiv.style.transform = 'translate(-50%, -50%)';
+                posDiv.textContent = position.pos;
+                posDiv.onclick = () => selectPlayerForPosition(position.pos, index);
+                display.appendChild(posDiv);
+            });
+        }
+
+        function loadTransferMarket() {
+            const marketDiv = document.getElementById('transferMarket');
+            marketDiv.innerHTML = '';
+            
+            // Show top 20 available players
+            gameState.transferMarket.slice(0, 20).forEach(player => {
+                const card = document.createElement('div');
+                card.className = 'transfer-card';
+                card.innerHTML = `
+                    <h4>${player.name}</h4>
+                    <p>${player.position} | ${player.age} years | ${player.nationality}</p>
+                    <p><strong>Overall:</strong> ${player.overall}</p>
+                    <p><strong>Value:</strong> £${(player.value/1000000).toFixed(1)}M</p>
+                    <button class="button" onclick="negotiateTransfer(${player.id})">Make Offer</button>
+                    <button class="button secondary" onclick="scoutPlayer(${player.id})">Scout Player</button>
+                `;
+                marketDiv.appendChild(card);
+            });
+        }
+
+        function updateLeagueTable() {
+            const tbody = document.getElementById('leagueTableBody');
+            tbody.innerHTML = '';
+            
+            // Sort league table by points, then goal difference
+            gameState.leagueTable.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                return b.goalDifference - a.goalDifference;
+            });
+            
+            gameState.leagueTable.forEach((team, index) => {
+                const row = document.createElement('tr');
+                if (team.name === gameState.currentClub.name) {
+                    row.className = 'highlight-row';
+                }
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${team.name}</td>
+                    <td>${team.played}</td>
+                    <td>${team.won}</td>
+                    <td>${team.drawn}</td>
+                    <td>${team.lost}</td>
+                    <td>${team.goalsFor}</td>
+                    <td>${team.goalsAgainst}</td>
+                    <td>${team.goalDifference > 0 ? '+' : ''}${team.goalDifference}</td>
+                    <td><strong>${team.points}</strong></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Match Simulation
+        function simulateMatch() {
+            const homeTeam = gameState.currentClub.name;
+            const awayTeam = gameState.leagueTable[Math.floor(Math.random() * 20)].name;
+            
+            if (awayTeam === homeTeam) {
+                simulateMatch();
+                return;
+            }
+            
+            document.getElementById('homeTeamName').textContent = homeTeam;
+            document.getElementById('awayTeamName').textContent = awayTeam;
+            document.getElementById('matchStatus').textContent = 'In Progress';
+            
+            gameState.matchEngine.homeScore = 0;
+            gameState.matchEngine.awayScore = 0;
+            gameState.matchEngine.minute = 0;
+            gameState.matchEngine.events = [];
+            
+            const matchInterval = setInterval(() => {
+                gameState.matchEngine.minute += 5;
+                document.getElementById('matchTime').textContent = gameState.matchEngine.minute + "'";
+                
+                // Random events
+                if (Math.random() < 0.15) {
+                    const eventType = Math.random();
+                    const isHome = Math.random() < 0.55; // Slight home advantage
+                    
+                    if (eventType < 0.4) {
+                        // Goal
+                        if (isHome) {
+                            gameState.matchEngine.homeScore++;
+                            addMatchEvent(`⚽ GOAL! ${homeTeam} scores! (${gameState.matchEngine.minute}')`, 'goal');
+                        } else {
+                            gameState.matchEngine.awayScore++;
+                            addMatchEvent(`⚽ GOAL! ${awayTeam} scores! (${gameState.matchEngine.minute}')`, 'goal');
+                        }
+                        updateMatchScore();
+                    } else if (eventType < 0.7) {
+                        // Yellow card
+                        const team = isHome ? homeTeam : awayTeam;
+                        addMatchEvent(`🟨 Yellow card for ${team} (${gameState.matchEngine.minute}')`, 'yellow');
+                    } else if (eventType < 0.75) {
+                        // Red card
+                        const team = isHome ? homeTeam : awayTeam;
+                        addMatchEvent(`🟥 Red card for ${team}! (${gameState.matchEngine.minute}')`, 'red');
+                    } else {
+                        // Other events
+                        const events = [
+                            'Great save by the goalkeeper!',
+                            'Shot hits the post!',
+                            'Close chance goes wide!',
+                            'Dangerous free kick...',
+                            'Corner kick...'
+                        ];
+                        addMatchEvent(events[Math.floor(Math.random() * events.length)] + ` (${gameState.matchEngine.minute}')`, '');
+                    }
+                }
+                
+                if (gameState.matchEngine.minute >= 90) {
+                    clearInterval(matchInterval);
+                    endMatch();
+                }
+            }, 1000);
+        }
+
+        function quickSim() {
+            const homeTeam = gameState.currentClub.name;
+            const awayTeam = gameState.leagueTable[Math.floor(Math.random() * 20)].name;
+            
+            if (awayTeam === homeTeam) {
+                quickSim();
+                return;
+            }
+            
+            // Quick calculation based on team strength
+            const homeGoals = Math.floor(Math.random() * 4);
+            const awayGoals = Math.floor(Math.random() * 3);
+            
+            gameState.matchEngine.homeScore = homeGoals;
+            gameState.matchEngine.awayScore = awayGoals;
+            
+            document.getElementById('homeTeamName').textContent = homeTeam;
+            document.getElementById('awayTeamName').textContent = awayTeam;
+            document.getElementById('homeScore').textContent = homeGoals;
+            document.getElementById('awayScore').textContent = awayGoals;
+            document.getElementById('matchStatus').textContent = 'Full Time';
+            document.getElementById('matchTime').textContent = "90'";
+            
+            addMatchEvent(`Match Result: ${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`, 'goal');
+            
+            updateLeagueAfterMatch(homeTeam, awayTeam, homeGoals, awayGoals);
+            updateSeasonRecord();
+        }
+
+        function addMatchEvent(text, type) {
+            const eventsDiv = document.getElementById('matchEvents');
+            const event = document.createElement('div');
+            event.className = `event ${type}`;
+            event.textContent = text;
+            eventsDiv.insertBefore(event, eventsDiv.firstChild);
+        }
+
+        function updateMatchScore() {
+            document.getElementById('homeScore').textContent = gameState.matchEngine.homeScore;
+            document.getElementById('awayScore').textContent = gameState.matchEngine.awayScore;
+        }
+
+        function endMatch() {
+            document.getElementById('matchStatus').textContent = 'Full Time';
+            const homeTeam = document.getElementById('homeTeamName').textContent;
+            const awayTeam = document.getElementById('awayTeamName').textContent;
+            
+            updateLeagueAfterMatch(homeTeam, awayTeam, gameState.matchEngine.homeScore, gameState.matchEngine.awayScore);
+            updateSeasonRecord();
+            
+            // Update player stats
+            gameState.squad.forEach(player => {
+                if (Math.random() < 0.3) {
+                    player.goals += Math.floor(Math.random() * 2);
+                }
+                if (Math.random() < 0.4) {
+                    player.assists += Math.floor(Math.random() * 2);
+                }
+            });
+        }
+
+        function updateLeagueAfterMatch(homeTeam, awayTeam, homeGoals, awayGoals) {
+            const homeTeamData = gameState.leagueTable.find(t => t.name === homeTeam);
+            const awayTeamData = gameState.leagueTable.find(t => t.name === awayTeam);
+            
+            if (homeTeamData && awayTeamData) {
+                homeTeamData.played++;
+                awayTeamData.played++;
+                homeTeamData.goalsFor += homeGoals;
+                homeTeamData.goalsAgainst += awayGoals;
+                awayTeamData.goalsFor += awayGoals;
+                awayTeamData.goalsAgainst += homeGoals;
+                
+                if (homeGoals > awayGoals) {
+                    homeTeamData.won++;
+                    homeTeamData.points += 3;
+                    awayTeamData.lost++;
+                } else if (awayGoals > homeGoals) {
+                    awayTeamData.won++;
+                    awayTeamData.points += 3;
+                    homeTeamData.lost++;
+                } else {
+                    homeTeamData.drawn++;
+                    awayTeamData.drawn++;
+                    homeTeamData.points++;
+                    awayTeamData.points++;
+                }
+                
+                homeTeamData.goalDifference = homeTeamData.goalsFor - homeTeamData.goalsAgainst;
+                awayTeamData.goalDifference = awayTeamData.goalsFor - awayTeamData.goalsAgainst;
+            }
+            
+            updateLeagueTable();
+        }
+
+        function updateSeasonRecord() {
+            const team = gameState.leagueTable.find(t => t.name === gameState.currentClub.name);
+            if (team) {
+                document.getElementById('seasonRecord').textContent = `W${team.won} D${team.drawn} L${team.lost}`;
+                const position = gameState.leagueTable.findIndex(t => t.name === gameState.currentClub.name) + 1;
+                document.getElementById('leaguePosition').textContent = `Position: ${position}${getPositionSuffix(position)}`;
+            }
+        }
+
+        function getPositionSuffix(position) {
+            if (position === 1) return 'st';
+            if (position === 2) return 'nd';
+            if (position === 3) return 'rd';
+            return 'th';
+        }
+
+        // Tactical Functions
+        function updateTactic(tacticName) {
+            const slider = document.getElementById(tacticName);
+            const value = slider.value;
+            document.getElementById(tacticName + 'Value').textContent = value;
+            gameState.tactics[tacticName] = parseInt(value);
+        }
+
+        function saveFormation() {
+            alert('Formation and tactics saved successfully!');
+            // Add news item
+            addNewsItem('📋 Manager updates tactical approach');
+        }
+
+        function loadPresetFormation(formation) {
+            gameState.formation = formation;
+            loadFormationView();
+        }
+
+        // Transfer Functions
+        function negotiateTransfer(playerId) {
+            const player = gameState.transferMarket.find(p => p.id === playerId);
+            if (!player) return;
+            
+            const modal = document.getElementById('transferModal');
+            const modalContent = document.getElementById('transferModalContent');
+            
+            modalContent.innerHTML = `
+                <h3>Transfer Negotiation for ${player.name}</h3>
+                <p><strong>Position:</strong> ${player.position}</p>
+                <p><strong>Age:</strong> ${player.age}</p>
+                <p><strong>Overall:</strong> ${player.overall}</p>
+                <p><strong>Asking Price:</strong> £${(player.value/1000000).toFixed(1)}M</p>
+                <p><strong>Wage Demands:</strong> £${player.wage.toLocaleString()}/week</p>
+                
+                <h4>Make Offer</h4>
+                <label>Transfer Fee: £<input type="number" id="offerAmount" value="${player.value}" />M</label><br>
+                <label>Weekly Wage: £<input type="number" id="offerWage" value="${player.wage}" /></label><br>
+                <label>Contract Length: <input type="number" id="contractLength" value="4" min="1" max="5" /> years</label><br>
+                
+                <button class="button" onclick="submitTransferOffer(${playerId})">Submit Offer</button>
+                <button class="button secondary" onclick="closeModal('transferModal')">Cancel</button>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function submitTransferOffer(playerId) {
+            const player = gameState.transferMarket.find(p => p.id === playerId);
+            const offerAmount = parseInt(document.getElementById('offerAmount').value);
+            const offerWage = parseInt(document.getElementById('offerWage').value);
+            const contractLength = parseInt(document.getElementById('contractLength').value);
+            
+            // Simple acceptance logic
+            const acceptanceChance = calculateAcceptanceChance(player, offerAmount, offerWage);
+            
+            if (Math.random() < acceptanceChance) {
+                // Transfer accepted
+                if (offerAmount <= gameState.currentClub.budget) {
+                    gameState.currentClub.budget -= offerAmount;
+                    gameState.currentClub.wageBudget -= offerWage;
+                    
+                    player.wage = offerWage;
+                    player.contract = contractLength;
+                    player.number = gameState.squad.length + 1;
+                    
+                    gameState.squad.push(player);
+                    gameState.transferMarket = gameState.transferMarket.filter(p => p.id !== playerId);
+                    
+                    updateHeaderStats();
+                    alert(`Transfer completed! ${player.name} joins ${gameState.currentClub.name}`);
+                    addNewsItem(`✅ ${gameState.currentClub.name} signs ${player.name} for £${(offerAmount/1000000).toFixed(1)}M`);
+                    closeModal('transferModal');
+                } else {
+                    alert('Insufficient funds!');
+                }
+            } else {
+                alert('Offer rejected! Try improving your offer.');
+            }
+        }
+
+        function calculateAcceptanceChance(player, offerAmount, offerWage) {
+            let chance = 0.5;
+            
+            if (offerAmount >= player.value) chance += 0.3;
+            if (offerAmount >= player.value * 1.2) chance += 0.2;
+            if (offerWage >= player.wage) chance += 0.2;
+            if (offerWage >= player.wage * 1.2) chance += 0.1;
+            
+            return Math.min(chance, 0.95);
+        }
+
+        // Scouting Functions
+        function generateScoutReport() {
+            const player = generatePlayer();
+            const report = {
+                player: player,
+                scoutAccuracy: Math.floor(Math.random() * 20) + 80,
+                recommendationLevel: Math.random() < 0.7 ? 'Recommended' : 'Highly Recommended',
+                date: new Date(gameState.currentDate)
+            };
+            
+            gameState.scoutReports.push(report);
+            loadScoutingReports();
+        }
+
+        function loadScoutingReports() {
+            const reportsDiv = document.getElementById('scoutReports');
+            reportsDiv.innerHTML = '';
+            
+            gameState.scoutReports.slice(-5).forEach(report => {
+                const reportDiv = document.createElement('div');
+                reportDiv.className = 'scout-report';
+                reportDiv.innerHTML = `
+                    <h3>${report.player.name}</h3>
+                    <p><strong>Position:</strong> ${report.player.position} | <strong>Age:</strong> ${report.player.age}</p>
+                    <p><strong>Overall:</strong> ${report.player.overall} | <strong>Potential:</strong> ${report.player.potential}</p>
+                    <p><strong>Scout Accuracy:</strong> ${report.scoutAccuracy}%</p>
+                    <p><strong>Recommendation:</strong> ${report.recommendationLevel}</p>
+                    <p><strong>Estimated Value:</strong> £${(report.player.value/1000000).toFixed(1)}M</p>
+                    <button class="button" onclick="signScoutedPlayer(${report.player.id})">Sign Player</button>
+                `;
+                reportsDiv.appendChild(reportDiv);
+            });
+        }
+
+        // Press Conference
+        function pressResponse(type) {
+            const responseDiv = document.getElementById('mediaResponse');
+            let impact = '';
+            
+            switch(type) {
+                case 'confident':
+                    gameState.boardConfidence += 2;
+                    gameState.squad.forEach(p => p.morale += 5);
+                    impact = 'Your confidence boosts team morale! Board confidence increased.';
+                    break;
+                case 'respectful':
+                    gameState.fanMood += 3;
+                    impact = 'Fans appreciate your respectful approach.';
+                    break;
+                case 'mindgames':
+                    if (Math.random() < 0.5) {
+                        gameState.squad.forEach(p => p.morale += 3);
+                        impact = 'Mind games successful! Opposition seems unsettled.';
+                    } else {
+                        gameState.boardConfidence -= 2;
+                        impact = 'Mind games backfired. Board not impressed.';
+                    }
+                    break;
+            }
+            
+            responseDiv.innerHTML = `
+                <div class="scout-report">
+                    <h4>Press Reaction</h4>
+                    <p>${impact}</p>
+                    <p>Board Confidence: ${gameState.boardConfidence}%</p>
+                    <p>Fan Mood: ${gameState.fanMood}%</p>
+                </div>
+            `;
+            
+            updateHeaderStats();
+        }
+
+        // News System
+        function addNewsItem(text) {
+            const ticker = document.getElementById('newsTicker');
+            const newsItem = document.createElement('span');
+            newsItem.className = 'news-item';
+            newsItem.textContent = text;
+            ticker.appendChild(newsItem);
+        }
+
+        // Utility Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function updateHeaderStats() {
+            document.getElementById('clubBudget').textContent = `£${(gameState.currentClub.budget/1000000).toFixed(1)}M`;
+            document.getElementById('wageBudget').textContent = `£${(gameState.currentClub.wageBudget/1000000).toFixed(1)}M`;
+            document.getElementById('squadSize').textContent = gameState.squad.length;
+        }
+
+        function advanceDate() {
+            gameState.currentDate.setDate(gameState.currentDate.getDate() + 7);
+            document.getElementById('currentDate').textContent = gameState.currentDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            
+            // Random events
+            if (Math.random() < 0.3) {
+                generateRandomEvent();
+            }
+        }
+
+        function generateRandomEvent() {
+            const events = [
+                () => {
+                    const player = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
+                    player.morale = Math.min(100, player.morale + 10);
+                    addNewsItem(`📈 ${player.name} in excellent form!`);
+                },
+                () => {
+                    const player = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
+                    player.fitness = Math.max(50, player.fitness - 20);
+                    addNewsItem(`🏥 ${player.name} picks up minor injury`);
+                },
+                () => {
+                    gameState.currentClub.budget += 5000000;
+                    addNewsItem(`💰 Sponsor bonus received: £5M`);
+                    updateHeaderStats();
+                },
+                () => {
+                    gameState.boardConfidence = Math.min(100, gameState.boardConfidence + 5);
+                    addNewsItem(`👔 Board pleased with recent performances`);
+                }
+            ];
+            
+            events[Math.floor(Math.random() * events.length)]();
+        }
+
+        // Initialize Game
+        function initializeGame() {
+            initializeSquad();
+            initializeLeagueTable();
+            initializeTransferMarket();
+            updateHeaderStats();
+            updateLeagueTable();
+            
+            // Add some initial recent results
+            const results = [
+                'W 3-1 vs Newcastle (Home)',
+                'D 2-2 vs Liverpool (Away)',
+                'W 4-0 vs Fulham (Home)',
+                'W 2-1 vs Chelsea (Away)',
+                'L 1-2 vs Arsenal (Home)'
+            ];
+            
+            const resultsDiv = document.getElementById('recentResults');
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = 'event';
+                div.textContent = result;
+                resultsDiv.appendChild(div);
+            });
+            
+            // Hide loading screen
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('gameContainer').style.display = 'block';
+            }, 2000);
+        }
+
+        // Auto-save functionality
+        function autoSave() {
+            localStorage.setItem('soccerManagerSave', JSON.stringify(gameState));
+            console.log('Game auto-saved');
+        }
+
+        // Load save if exists
+        function loadSave() {
+            const save = localStorage.getItem('soccerManagerSave');
+            if (save) {
+                const loadedState = JSON.parse(save);
+                Object.assign(gameState, loadedState);
+                console.log('Save loaded');
+            }
+        }
+
+        // Position filter for squad view
+        function showPositionFilter(position) {
+            const squadList = document.getElementById('squadList');
+            squadList.innerHTML = '';
+            
+            let filteredSquad = gameState.squad;
+            if (position !== 'ALL') {
+                if (position === 'DEF') {
+                    filteredSquad = gameState.squad.filter(p => ['CB', 'LB', 'RB'].includes(p.position));
+                } else if (position === 'MID') {
+                    filteredSquad = gameState.squad.filter(p => ['CDM', 'CM', 'CAM'].includes(p.position));
+                } else if (position === 'ATT') {
+                    filteredSquad = gameState.squad.filter(p => ['LW', 'RW', 'ST'].includes(p.position));
+                } else {
+                    filteredSquad = gameState.squad.filter(p => p.position === position);
+                }
+            }
+            
+            filteredSquad.forEach(player => {
+                const playerCard = createPlayerCard(player);
+                squadList.appendChild(playerCard);
+            });
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            initializeGame();
+            
+            // Auto-save every 30 seconds
+            setInterval(autoSave, 30000);
+            
+            // Advance date weekly
+            setInterval(advanceDate, 60000);
+        };
+    </script>
+</body>
+</html>
