@@ -200,30 +200,77 @@ window.onload = () => {
     setInterval(advanceDate, 10000); // Speed up for testing
 };
 
+function simulateWeek() {
+    const teams = [...gameState.leagueTable];
+    const fixtures = [];
+
+    // Simple fixture generation for one week
+    for (let i = teams.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [teams[i], teams[j]] = [teams[j], teams[i]];
+    }
+
+    for (let i = 0; i < teams.length; i += 2) {
+        if (teams[i+1]) {
+            fixtures.push([teams[i], teams[i+1]]);
+        }
+    }
+
+    const weeklyResults = [];
+
+    fixtures.forEach(([homeTeamData, awayTeamData]) => {
+        const homeSquad = (homeTeamData.name === gameState.currentClub.name) ? gameState.squad : generateOpponentSquad(homeTeamData.name);
+        const awaySquad = (awayTeamData.name === gameState.currentClub.name) ? gameState.squad : generateOpponentSquad(awayTeamData.name);
+
+        const engine = new MatchEngine(homeTeamData.name, awayTeamData.name, homeSquad, awaySquad, {});
+        const result = engine.simulate();
+
+        updateLeagueAfterMatch(homeTeamData.name, awayTeamData.name, result.homeScore, result.awayScore);
+        weeklyResults.push({homeTeam: homeTeamData.name, awayTeam: awayTeamData.name, homeScore: result.homeScore, awayScore: result.awayScore});
+    });
+
+    updateLeagueTable();
+    displayWeeklyResults(weeklyResults);
+
+    const playerMatch = weeklyResults.find(r => r.homeTeam === gameState.currentClub.name || r.awayTeam === gameState.currentClub.name);
+    let teamPerformance = 0;
+    if (playerMatch) {
+        const isHome = playerMatch.homeTeam === gameState.currentClub.name;
+        if ((isHome && playerMatch.homeScore > playerMatch.awayScore) || (!isHome && playerMatch.awayScore > playerMatch.homeScore)) {
+            teamPerformance = 1; // Win
+        } else if (playerMatch.homeScore === playerMatch.awayScore) {
+            teamPerformance = 0; // Draw
+        } else {
+            teamPerformance = -1; // Loss
+        }
+    }
+    return teamPerformance;
+}
+
 function advanceDate() {
     gameState.currentDate.setDate(gameState.currentDate.getDate() + 7);
     document.getElementById('currentDate').textContent = gameState.currentDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
+    const teamPerformance = simulateWeek();
+
     const injurySystem = new InjurySystem();
     const moraleSystem = new MoraleSystem();
-    const teamPerformance = Math.random() > 0.6 ? 1 : (Math.random() > 0.5 ? 0 : -1); // Placeholder for team performance
 
-    // Player Development, Injury, and Morale updates
     gameState.squad.forEach(player => {
         const dev = new PlayerDevelopment(player);
         dev.weeklyDevelopment();
-
         injurySystem.processWeeklyRecovery(player);
         if (player.injuries.length === 0) {
              injurySystem.calculateInjuryRisk(player);
         }
-
         moraleSystem.updatePlayerMorale(player, teamPerformance);
     });
 
-    // Refresh squad view if it's the active tab
     if(document.getElementById('squad') && document.getElementById('squad').classList.contains('active')) {
         loadSquadView();
+    }
+    if(document.getElementById('league') && document.getElementById('league').classList.contains('active')) {
+        updateLeagueTable();
     }
 
     if (Math.random() < 0.3) {

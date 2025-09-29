@@ -55,49 +55,77 @@ class MatchEngine {
         return strength;
     }
 
+    selectPlayer(players, category) {
+        const categoryPlayers = this.getPlayersByPositionCategory(players, category);
+        if (categoryPlayers.length > 0) {
+            return categoryPlayers[Math.floor(Math.random() * categoryPlayers.length)];
+        }
+        return players[Math.floor(Math.random() * players.length)]; // Fallback
+    }
+
     simulate() {
         const homeStrength = this.calculateTeamStrength(this.homePlayers);
         const awayStrength = this.calculateTeamStrength(this.awayPlayers);
 
         // Add home advantage
         homeStrength.overall *= 1.05;
-        homeStrength.attack *= 1.08; // More significant advantage in attack
+        homeStrength.attack *= 1.08;
 
         const totalAttack = homeStrength.attack + awayStrength.attack;
 
         for (let minute = 1; minute <= 90; minute++) {
-            // Chance of an event happening
             if (Math.random() < 0.2) {
                 const attackPower = Math.random() * totalAttack;
 
                 if (attackPower < homeStrength.attack) {
-                    // Home team attacks
-                    // Goal chance depends on attack vs defense
                     const goalChance = (homeStrength.attack / (homeStrength.attack + awayStrength.defense*1.5));
-                    if (Math.random() < goalChance / 10) { // Divided by 10 to reduce goal fest
+                    if (Math.random() < goalChance / 10) {
                         this.homeScore++;
-                        const scorer = this.getPlayersByPositionCategory(this.homePlayers, 'ATT')[0] || this.homePlayers[0];
-                        this.events.push({ minute, type: 'goal', team: this.homeTeam, text: `⚽ GOAL! ${scorer.name} scores for ${this.homeTeam}!` });
+                        const scorer = this.selectPlayer(this.homePlayers, 'ATT');
+                        scorer.statistics.goals++;
+                        let eventText = `⚽ GOAL! ${scorer.name} scores for ${this.homeTeam}!`;
+
+                        if (Math.random() < 0.7) { // 70% chance of assist
+                            const assister = this.selectPlayer(this.homePlayers, 'MID');
+                            if (assister.id !== scorer.id) {
+                                assister.statistics.assists++;
+                                eventText += ` (Assist: ${assister.name})`;
+                            }
+                        }
+                        this.events.push({ minute, type: 'goal', team: this.homeTeam, text: eventText });
                     } else {
                          this.events.push({ minute, type: 'chance', team: this.homeTeam, text: `A close chance for ${this.homeTeam}!` });
                     }
                 } else {
-                    // Away team attacks
                      const goalChance = (awayStrength.attack / (awayStrength.attack + homeStrength.defense*1.5));
                      if (Math.random() < goalChance / 10) {
                         this.awayScore++;
-                        const scorer = this.getPlayersByPositionCategory(this.awayPlayers, 'ATT')[0] || this.awayPlayers[0];
-                        this.events.push({ minute, type: 'goal', team: this.awayTeam, text: `⚽ GOAL! ${scorer.name} scores for ${this.awayTeam}!` });
+                        const scorer = this.selectPlayer(this.awayPlayers, 'ATT');
+                        scorer.statistics.goals++;
+                        let eventText = `⚽ GOAL! ${scorer.name} scores for ${this.awayTeam}!`;
+
+                        if (Math.random() < 0.7) {
+                            const assister = this.selectPlayer(this.awayPlayers, 'MID');
+                             if (assister.id !== scorer.id) {
+                                assister.statistics.assists++;
+                                eventText += ` (Assist: ${assister.name})`;
+                            }
+                        }
+                        this.events.push({ minute, type: 'goal', team: this.awayTeam, text: eventText });
                     }
                 }
             }
 
-            // Random cards
             if (Math.random() < 0.01) {
                  const team = Math.random() < 0.5 ? this.homeTeam : this.awayTeam;
                  this.events.push({ minute, type: 'yellow', team, text: `🟨 Yellow card for ${team}.` });
             }
         }
+
+        // Update appearances for all players
+        this.homePlayers.forEach(p => p.statistics.appearances++);
+        this.awayPlayers.forEach(p => p.statistics.appearances++);
+
         return {
             homeScore: this.homeScore,
             awayScore: this.awayScore,
@@ -109,7 +137,6 @@ class MatchEngine {
 // Match Simulation
 function simulateMatch() {
     const homeTeam = gameState.currentClub;
-    // Find a different team for the opponent
     let awayTeamData = gameState.leagueTable[Math.floor(Math.random() * gameState.leagueTable.length)];
     while(awayTeamData.name === homeTeam.name) {
         awayTeamData = gameState.leagueTable[Math.floor(Math.random() * gameState.leagueTable.length)];
@@ -120,7 +147,6 @@ function simulateMatch() {
     document.getElementById('awayTeamName').textContent = awayTeam.name;
     document.getElementById('matchStatus').textContent = 'In Progress';
 
-    // Reset UI
     gameState.matchEngine.homeScore = 0;
     gameState.matchEngine.awayScore = 0;
     gameState.matchEngine.minute = 0;
@@ -187,15 +213,8 @@ function quickSim() {
 
 function endMatch(homeTeamName, awayTeamName, homeScore, awayScore) {
     document.getElementById('matchStatus').textContent = 'Full Time';
-
     updateLeagueAfterMatch(homeTeamName, awayTeamName, homeScore, awayScore);
     updateSeasonRecord();
-
-    // Update player stats (placeholder)
-    gameState.squad.forEach(player => {
-        if (Math.random() < 0.1) player.goals++;
-        if (Math.random() < 0.15) player.assists++;
-    });
 }
 
 function updateLeagueAfterMatch(homeTeam, awayTeam, homeGoals, awayGoals) {
@@ -240,3 +259,7 @@ function updateSeasonRecord() {
         document.getElementById('leaguePosition').textContent = `Position: ${position}${getPositionSuffix(position)}`;
     }
 }
+
+// Make functions globally available for onclick events
+window.simulateMatch = simulateMatch;
+window.quickSim = quickSim;
